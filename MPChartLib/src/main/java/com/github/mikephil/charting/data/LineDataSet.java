@@ -64,6 +64,11 @@ public class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
 
     private boolean mDrawCircleHole = true;
 
+    /**
+     * 一个点也绘制线
+     */
+    private boolean showOneDrawLine = true;
+
 
     public LineDataSet(List<Entry> yVals, String label) {
         super(yVals, label);
@@ -408,10 +413,25 @@ public class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
         return mFillFormatter;
     }
 
+    @Override
+    public boolean isShowOneDrawLine() {
+        return showOneDrawLine;
+    }
+
+    /**
+     * 设置 一个点也绘制线
+     *
+     * @param showOneDrawLine
+     */
+    public void setShowOneDrawLine(boolean showOneDrawLine) {
+        this.showOneDrawLine = showOneDrawLine;
+    }
+
     public enum Mode {
         LINEAR,
         STEPPED,
         CUBIC_BEZIER,
         HORIZONTAL_BEZIER
     }
+
 }

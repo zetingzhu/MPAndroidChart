@@ -9,7 +9,9 @@ import android.graphics.DashPathEffect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+
 import androidx.core.content.ContextCompat;
+
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -44,8 +46,8 @@ import java.util.List;
 /**
  * Example of a heavily customized {@link LineChart} with limit lines, custom line shapes, etc.
  *
- * @since 1.7.4
  * @version 3.1.0
+ * @since 1.7.4
  */
 public class LineChartActivity1 extends DemoBase implements OnSeekBarChangeListener,
         OnChartValueSelectedListener {
@@ -139,9 +141,9 @@ public class LineChartActivity1 extends DemoBase implements OnSeekBarChangeListe
             llXAxis.setTextSize(10f);
             llXAxis.setTypeface(tfRegular);
 
-            LimitLine ll1 = new LimitLine(150f, "Upper Limit");
+            LimitLine ll1 = new LimitLine(50f, "Upper Limit");
             ll1.setLineWidth(4f);
-            ll1.enableDashedLine(10f, 10f, 0f);
+//            ll1.enableDashedLine(10f, 10f, 0f);
             ll1.setLabelPosition(LimitLabelPosition.RIGHT_TOP);
             ll1.setTextSize(10f);
             ll1.setTypeface(tfRegular);
@@ -158,15 +160,15 @@ public class LineChartActivity1 extends DemoBase implements OnSeekBarChangeListe
             xAxis.setDrawLimitLinesBehindData(true);
 
             // add limit lines
-            yAxis.addLimitLine(ll1);
-            yAxis.addLimitLine(ll2);
+//            yAxis.addLimitLine(ll1);
+//            yAxis.addLimitLine(ll2);
             //xAxis.addLimitLine(llXAxis);
         }
 
         // add data
-        seekBarX.setProgress(45);
+        seekBarX.setProgress(2);
         seekBarY.setProgress(180);
-        setData(45, 180);
+        setData(2, 180);
 
         // draw points over time
         chart.animateX(1500);
@@ -188,6 +190,9 @@ public class LineChartActivity1 extends DemoBase implements OnSeekBarChangeListe
             values.add(new Entry(i, val, getResources().getDrawable(R.drawable.star)));
         }
 
+//        values.add(new Entry(0, 50f, getResources().getDrawable(R.drawable.star)));
+//        values.add(new Entry(1, 60, getResources().getDrawable(R.drawable.star)));
+
         LineDataSet set1;
 
         if (chart.getData() != null &&
@@ -204,15 +209,15 @@ public class LineChartActivity1 extends DemoBase implements OnSeekBarChangeListe
             set1.setDrawIcons(false);
 
             // draw dashed line
-            set1.enableDashedLine(10f, 5f, 0f);
+//            set1.enableDashedLine(10f, 5f, 0f);
 
             // black lines and points
             set1.setColor(Color.BLACK);
             set1.setCircleColor(Color.BLACK);
 
             // line thickness and point size
-            set1.setLineWidth(1f);
-            set1.setCircleRadius(3f);
+            set1.setLineWidth(5f);
+            set1.setCircleRadius(10f);
 
             // draw points as solid circles
             set1.setDrawCircleHole(false);
@@ -228,6 +233,7 @@ public class LineChartActivity1 extends DemoBase implements OnSeekBarChangeListe
             // draw selection line as dashed
             set1.enableDashedHighlightLine(10f, 5f, 0f);
 
+
             // set the filled area
             set1.setDrawFilled(true);
             set1.setFillFormatter(new IFillFormatter() {
@@ -236,6 +242,8 @@ public class LineChartActivity1 extends DemoBase implements OnSeekBarChangeListe
                     return chart.getAxisLeft().getAxisMinimum();
                 }
             });
+            // 一个点不绘制线和填充色
+            set1.setShowOneDrawLine(true);
 
             // set color of filled area
             if (Utils.getSDKInt() >= 18) {
@@ -300,7 +308,7 @@ public class LineChartActivity1 extends DemoBase implements OnSeekBarChangeListe
                 break;
             }
             case R.id.actionToggleHighlight: {
-                if(chart.getData() != null) {
+                if (chart.getData() != null) {
                     chart.getData().setHighlightEnabled(!chart.getData().isHighlightEnabled());
                     chart.invalidate();
                 }
@@ -346,7 +354,7 @@ public class LineChartActivity1 extends DemoBase implements OnSeekBarChangeListe
                     LineDataSet set = (LineDataSet) iSet;
                     set.setMode(set.getMode() == LineDataSet.Mode.CUBIC_BEZIER
                             ? LineDataSet.Mode.LINEAR
-                            :  LineDataSet.Mode.CUBIC_BEZIER);
+                            : LineDataSet.Mode.CUBIC_BEZIER);
                 }
                 chart.invalidate();
                 break;
@@ -360,7 +368,7 @@ public class LineChartActivity1 extends DemoBase implements OnSeekBarChangeListe
                     LineDataSet set = (LineDataSet) iSet;
                     set.setMode(set.getMode() == LineDataSet.Mode.STEPPED
                             ? LineDataSet.Mode.LINEAR
-                            :  LineDataSet.Mode.STEPPED);
+                            : LineDataSet.Mode.STEPPED);
                 }
                 chart.invalidate();
                 break;
@@ -374,7 +382,7 @@ public class LineChartActivity1 extends DemoBase implements OnSeekBarChangeListe
                     LineDataSet set = (LineDataSet) iSet;
                     set.setMode(set.getMode() == LineDataSet.Mode.HORIZONTAL_BEZIER
                             ? LineDataSet.Mode.LINEAR
-                            :  LineDataSet.Mode.HORIZONTAL_BEZIER);
+                            : LineDataSet.Mode.HORIZONTAL_BEZIER);
                 }
                 chart.invalidate();
                 break;
@@ -435,10 +443,12 @@ public class LineChartActivity1 extends DemoBase implements OnSeekBarChangeListe
     }
 
     @Override
-    public void onStartTrackingTouch(SeekBar seekBar) {}
+    public void onStartTrackingTouch(SeekBar seekBar) {
+    }
 
     @Override
-    public void onStopTrackingTouch(SeekBar seekBar) {}
+    public void onStopTrackingTouch(SeekBar seekBar) {
+    }
 
     @Override
     public void onValueSelected(Entry e, Highlight h) {

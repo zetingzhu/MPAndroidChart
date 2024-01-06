@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 
 import com.github.mikephil.charting.animation.ChartAnimator;
 import com.github.mikephil.charting.charts.LineChart;
@@ -24,6 +25,7 @@ import com.github.mikephil.charting.utils.Utils;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -55,6 +57,10 @@ public class LineChartRenderer extends LineRadarRenderer {
 
     protected Path cubicPath = new Path();
     protected Path cubicFillPath = new Path();
+    /**
+     * 一个点绘制线
+     */
+    protected Path mOneLinesPath = new Path();
 
     public LineChartRenderer(LineDataProvider chart, ChartAnimator animator,
                              ViewPortHandler viewPortHandler) {
@@ -321,72 +327,72 @@ public class LineChartRenderer extends LineRadarRenderer {
 
         // more than 1 color
         if (dataSet.getColors().size() > 1) {
-
-            int numberOfFloats = pointsPerEntryPair * 2;
-
-            if (mLineBuffer.length <= numberOfFloats)
-                mLineBuffer = new float[numberOfFloats * 2];
-
-            int max = mXBounds.min + mXBounds.range;
-
-            for (int j = mXBounds.min; j < max; j++) {
-
-                Entry e = dataSet.getEntryForIndex(j);
-                if (e == null) continue;
-
-                mLineBuffer[0] = e.getX();
-                mLineBuffer[1] = e.getY() * phaseY;
-
-                if (j < mXBounds.max) {
-
-                    e = dataSet.getEntryForIndex(j + 1);
-
-                    if (e == null) break;
-
-                    if (isDrawSteppedEnabled) {
-                        mLineBuffer[2] = e.getX();
-                        mLineBuffer[3] = mLineBuffer[1];
-                        mLineBuffer[4] = mLineBuffer[2];
-                        mLineBuffer[5] = mLineBuffer[3];
-                        mLineBuffer[6] = e.getX();
-                        mLineBuffer[7] = e.getY() * phaseY;
-                    } else {
-                        mLineBuffer[2] = e.getX();
-                        mLineBuffer[3] = e.getY() * phaseY;
-                    }
-
-                } else {
-                    mLineBuffer[2] = mLineBuffer[0];
-                    mLineBuffer[3] = mLineBuffer[1];
-                }
-
-                // Determine the start and end coordinates of the line, and make sure they differ.
-                float firstCoordinateX = mLineBuffer[0];
-                float firstCoordinateY = mLineBuffer[1];
-                float lastCoordinateX = mLineBuffer[numberOfFloats - 2];
-                float lastCoordinateY = mLineBuffer[numberOfFloats - 1];
-
-                if (firstCoordinateX == lastCoordinateX &&
-                        firstCoordinateY == lastCoordinateY)
-                    continue;
-
-                trans.pointValuesToPixel(mLineBuffer);
-
-                if (!mViewPortHandler.isInBoundsRight(firstCoordinateX))
-                    break;
-
-                // make sure the lines don't do shitty things outside
-                // bounds
-                if (!mViewPortHandler.isInBoundsLeft(lastCoordinateX) ||
-                        !mViewPortHandler.isInBoundsTop(Math.max(firstCoordinateY, lastCoordinateY)) ||
-                        !mViewPortHandler.isInBoundsBottom(Math.min(firstCoordinateY, lastCoordinateY)))
-                    continue;
-
-                // get the color that is set for this line-segment
-                mRenderPaint.setColor(dataSet.getColor(j));
-
-                canvas.drawLines(mLineBuffer, 0, pointsPerEntryPair * 2, mRenderPaint);
-            }
+//
+//            int numberOfFloats = pointsPerEntryPair * 2;
+//
+//            if (mLineBuffer.length <= numberOfFloats)
+//                mLineBuffer = new float[numberOfFloats * 2];
+//
+//            int max = mXBounds.min + mXBounds.range;
+//
+//            for (int j = mXBounds.min; j < max; j++) {
+//
+//                Entry e = dataSet.getEntryForIndex(j);
+//                if (e == null) continue;
+//
+//                mLineBuffer[0] = e.getX();
+//                mLineBuffer[1] = e.getY() * phaseY;
+//
+//                if (j < mXBounds.max) {
+//
+//                    e = dataSet.getEntryForIndex(j + 1);
+//
+//                    if (e == null) break;
+//
+//                    if (isDrawSteppedEnabled) {
+//                        mLineBuffer[2] = e.getX();
+//                        mLineBuffer[3] = mLineBuffer[1];
+//                        mLineBuffer[4] = mLineBuffer[2];
+//                        mLineBuffer[5] = mLineBuffer[3];
+//                        mLineBuffer[6] = e.getX();
+//                        mLineBuffer[7] = e.getY() * phaseY;
+//                    } else {
+//                        mLineBuffer[2] = e.getX();
+//                        mLineBuffer[3] = e.getY() * phaseY;
+//                    }
+//
+//                } else {
+//                    mLineBuffer[2] = mLineBuffer[0];
+//                    mLineBuffer[3] = mLineBuffer[1];
+//                }
+//
+//                // Determine the start and end coordinates of the line, and make sure they differ.
+//                float firstCoordinateX = mLineBuffer[0];
+//                float firstCoordinateY = mLineBuffer[1];
+//                float lastCoordinateX = mLineBuffer[numberOfFloats - 2];
+//                float lastCoordinateY = mLineBuffer[numberOfFloats - 1];
+//
+//                if (firstCoordinateX == lastCoordinateX &&
+//                        firstCoordinateY == lastCoordinateY)
+//                    continue;
+//
+//                trans.pointValuesToPixel(mLineBuffer);
+//
+//                if (!mViewPortHandler.isInBoundsRight(firstCoordinateX))
+//                    break;
+//
+//                // make sure the lines don't do shitty things outside
+//                // bounds
+//                if (!mViewPortHandler.isInBoundsLeft(lastCoordinateX) ||
+//                        !mViewPortHandler.isInBoundsTop(Math.max(firstCoordinateY, lastCoordinateY)) ||
+//                        !mViewPortHandler.isInBoundsBottom(Math.min(firstCoordinateY, lastCoordinateY)))
+//                    continue;
+//
+//                // get the color that is set for this line-segment
+//                mRenderPaint.setColor(dataSet.getColor(j));
+//
+//                canvas.drawLines(mLineBuffer, 0, pointsPerEntryPair * 2, mRenderPaint);
+//            }
 
         } else { // only one color per dataset
 
@@ -429,6 +435,18 @@ public class LineChartRenderer extends LineRadarRenderer {
                     mRenderPaint.setColor(dataSet.getColor());
 
                     canvas.drawLines(mLineBuffer, 0, size, mRenderPaint);
+
+
+                    // todo 自己修改，这里可以绘制线
+//                    Log.d("zzt", "自己修改：" + Arrays.toString(mLineBuffer));
+
+                    if (dataSet.isShowOneDrawLine() && entryCount == 1) {
+                        mOneLinesPath.reset();
+                        mOneLinesPath.moveTo(mViewPortHandler.contentLeft(), mLineBuffer[1]);
+                        mOneLinesPath.lineTo(mViewPortHandler.contentRight(), mLineBuffer[1]);
+
+                        c.drawPath(mOneLinesPath, mRenderPaint);
+                    }
                 }
             }
         }
@@ -465,7 +483,13 @@ public class LineChartRenderer extends LineRadarRenderer {
             currentEndIndex = currentEndIndex > endingIndex ? endingIndex : currentEndIndex;
 
             if (currentStartIndex <= currentEndIndex) {
-                generateFilledPath(dataSet, currentStartIndex, currentEndIndex, filled);
+                if (dataSet.isShowOneDrawLine() && currentEndIndex == 0) {
+                    generateFilledPathOnePoint(dataSet, currentStartIndex, currentEndIndex, filled);
+                } else {
+                    generateFilledPath(dataSet, currentStartIndex, currentEndIndex, filled);
+                }
+
+                Log.d("zzt", "自己修改 3：" + filled.toString() + " currentStartIndex:" + currentStartIndex + " > currentEndIndex:" + currentEndIndex);
 
                 trans.pathValueToPixel(filled);
 
@@ -486,6 +510,42 @@ public class LineChartRenderer extends LineRadarRenderer {
     }
 
     /**
+     * 修改一个点的时候，也需要填充最下方渐变
+     *
+     * @param dataSet
+     * @param startIndex
+     * @param endIndex
+     * @param outputPath
+     */
+    private void generateFilledPathOnePoint(final ILineDataSet dataSet, final int startIndex, final int endIndex, final Path outputPath) {
+        final float fillMin = dataSet.getFillFormatter().getFillLinePosition(dataSet, mChart);
+        Log.d("zzt", "自己修改 4 fillMin:" + fillMin + " yMin：" + dataSet.getYMin() + " yMAX:" + dataSet.getYMax() + " >> xMin:" + dataSet.getXMin() + " - xMax:" + dataSet.getXMax());
+        Log.d("zzt", "自己修改 5 yMin：" + mChart.getYChartMin() + " yMAX:" + mChart.getYChartMax() + " >> xMin:" + mChart.getXChartMin() + " - xMax:" + mChart.getXChartMax());
+
+        final float phaseY = mAnimator.getPhaseY();
+        final boolean isDrawSteppedEnabled = dataSet.getMode() == LineDataSet.Mode.STEPPED;
+
+        final Path filled = outputPath;
+        filled.reset();
+
+        final Entry entry = dataSet.getEntryForIndex(startIndex);
+
+        filled.moveTo(mChart.getXChartMin(), fillMin);
+        filled.lineTo(mChart.getXChartMin(), entry.getY() * phaseY);
+        Log.d("zzt", "自己修改 6 x：" + entry.getX());
+
+        if (isDrawSteppedEnabled) {
+            filled.lineTo(mChart.getXChartMax(), entry.getY() * phaseY);
+        }
+
+        filled.lineTo(mChart.getXChartMax(), entry.getY() * phaseY);
+        filled.lineTo(mChart.getXChartMax(), fillMin);
+
+
+        filled.close();
+    }
+
+    /**
      * Generates a path that is used for filled drawing.
      *
      * @param dataSet    The dataset from which to read the entries.
@@ -497,6 +557,10 @@ public class LineChartRenderer extends LineRadarRenderer {
     private void generateFilledPath(final ILineDataSet dataSet, final int startIndex, final int endIndex, final Path outputPath) {
 
         final float fillMin = dataSet.getFillFormatter().getFillLinePosition(dataSet, mChart);
+
+        Log.d("zzt", "自己修改 4 fillMin:" + fillMin + " yMin：" + dataSet.getYMin() + " yMAX:" + dataSet.getYMax() + " >> xMin:" + dataSet.getXMin() + " - xMax:" + dataSet.getXMax());
+        Log.d("zzt", "自己修改 5 yMin：" + mChart.getYChartMin() + " yMAX:" + mChart.getYChartMax() + " >> xMin:" + mChart.getXChartMin() + " - xMax:" + mChart.getXChartMax());
+
         final float phaseY = mAnimator.getPhaseY();
         final boolean isDrawSteppedEnabled = dataSet.getMode() == LineDataSet.Mode.STEPPED;
 
@@ -591,8 +655,8 @@ public class LineChartRenderer extends LineRadarRenderer {
                         Utils.drawImage(
                                 c,
                                 icon,
-                                (int)(x + iconsOffset.x),
-                                (int)(y + iconsOffset.y),
+                                (int) (x + iconsOffset.x),
+                                (int) (y + iconsOffset.y),
                                 icon.getIntrinsicWidth(),
                                 icon.getIntrinsicHeight());
                     }

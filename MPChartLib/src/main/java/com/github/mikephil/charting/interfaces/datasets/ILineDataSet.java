@@ -100,4 +100,10 @@ public interface ILineDataSet extends ILineRadarDataSet<Entry> {
      * @return
      */
     IFillFormatter getFillFormatter();
+
+
+    /**
+     * 一个点也需要绘制线
+     */
+    boolean isShowOneDrawLine();
 }

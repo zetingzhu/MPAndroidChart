@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Path;
 import android.graphics.RectF;
+import android.util.Log;
 
 import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.YAxis;
@@ -16,6 +17,7 @@ import com.github.mikephil.charting.utils.Transformer;
 import com.github.mikephil.charting.utils.Utils;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class YAxisRenderer extends AxisRenderer {
@@ -295,6 +297,9 @@ public class YAxisRenderer extends AxisRenderer {
             limitLinePath.lineTo(mViewPortHandler.contentRight(), pts[1]);
 
             c.drawPath(limitLinePath, mLimitLinePaint);
+
+//            Log.d("zzt" , "自己修改 2 ：" + Arrays.toString(pts));
+
             limitLinePath.reset();
             // c.drawLines(pts, mLimitLinePaint);
 
