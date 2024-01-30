@@ -63,7 +63,15 @@ public class LineChartActivity1 extends DemoBase implements OnSeekBarChangeListe
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_linechart);
 
-        setTitle("LineChartActivity1");
+        float yMin = 0.01f;
+        float min = yMin - (yMin * 0.2f);
+        double floor = Math.floor(min);
+
+        Log.d("zzt", " floor 0 min:" + min);
+        Log.d("zzt", " floor:" + floor);
+        Log.d("zzt", " floor min :" + ((float) floor));
+        setTitle("LineChartActivity1" + ((float) floor));
+
 
         tvX = findViewById(R.id.tvXMax);
         tvY = findViewById(R.id.tvYMax);
@@ -244,11 +252,13 @@ public class LineChartActivity1 extends DemoBase implements OnSeekBarChangeListe
             });
             // 一个点不绘制线和填充色
             set1.setShowOneDrawLine(true);
-
+            // 设置曲线为圆滑曲线
+//            set1.setMode(LineDataSet.Mode.CUBIC_BEZIER);
+            set1.setMode(LineDataSet.Mode.LINEAR);
             // set color of filled area
             if (Utils.getSDKInt() >= 18) {
                 // drawables only supported on api level 18 and above
-                Drawable drawable = ContextCompat.getDrawable(this, R.drawable.fade_red);
+                Drawable drawable = ContextCompat.getDrawable(this, R.drawable.fade_yellow);
                 set1.setFillDrawable(drawable);
             } else {
                 set1.setFillColor(Color.BLACK);
